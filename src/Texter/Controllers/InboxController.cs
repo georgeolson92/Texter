@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Texter.Models;
+using Texter.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 
@@ -30,7 +31,24 @@ namespace Texter.Controllers
         public IActionResult GetMessages()
         {
             var allMessages = Message.GetMessages();
-            return View();
+            List<Message> incomingMessages = new List<Message>();
+            List<Message> sentMessages = new List<Message>();
+            foreach (var message in allMessages)
+            {
+                if (message.To == "+15038500537")
+                {
+                    incomingMessages.Add(message);
+                }
+                else
+                {
+                    sentMessages.Add(message);
+                }
+            }
+
+            InboxViewModel inbox = new InboxViewModel();
+            inbox.incomingMessages = incomingMessages;
+            inbox.sentMessages = sentMessages;
+            return View(inbox);
         }
 
         public IActionResult SendMessage()
